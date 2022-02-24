@@ -1,6 +1,7 @@
 <template>
-  <div>
+  <div class="tags">
     <el-tag
+      :style="{ margin: '0 0.3vw' }"
       :key="tag"
       v-for="tag in dynamicTags"
       closable
@@ -37,9 +38,15 @@
   padding-bottom: 0;
 }
 .input-new-tag {
-  width: 90px;
+  width: 8vw !important;
   margin-left: 10px;
   vertical-align: bottom;
+}
+.tags {
+  display: flex;
+  flex-flow: row nowrap !important;
+  justify-content: flex-start;
+  align-items: center;
 }
 </style>
 

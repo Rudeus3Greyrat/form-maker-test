@@ -1,7 +1,13 @@
 <template>
   <div id="app">
-    <button @click="getJson">json</button>
-    <FormMaker ref="formMaker" :json="initJson"></FormMaker>
+    <FormMaker
+      ref="formMaker"
+      :json="initJson"
+      mode="edit"
+      :uploadConfig="{
+        handleUploadChange: demoFn,
+      }"
+    ></FormMaker>
   </div>
 </template>
 
@@ -12,8 +18,9 @@ export default {
   components: { FormMaker },
   data() {
     return {
+      demoFn: () => console.log('2222'),
       initJson:
-        '{"id":"d20a0a71-09e8-846a-9cb0-41bc3e50761b","type":"root","children":[{"children":{"fsdf":[{"children":{"fsdf":[],"fdsgvdf":[{"children":[],"type":"checkbox","label":"safds","options":["fsdf","fdsgvdf"],"value":[],"id":"b1de16f2-e130-c7b8-0ff9-129b4423f4c9"}]},"type":"radio","label":"safds","options":["fsdf","fdsgvdf"],"value":"fdsgvdf","id":"eb9f06f6-3958-4a76-bc5b-330d88d5abdf"}],"fdsgvdf":[{"children":[],"type":"text","label":"safds","value":"dsv fdsc","id":"e6da48e0-c388-e465-40d8-8bd1e668c75a"}]},"type":"radio","label":"safds","options":["fsdf","fdsgvdf"],"value":"fsdf","id":"37c8150c-348b-ad92-a02e-7eba6d984db6"}]}',
+        '{"id":"bfe44b80-d49f-8ca5-1793-82381a4ec1d2","type":"root","children":[{"children":{"A":[{"children":[],"type":"image","url":"https://dss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/topnav/newfanyi-da0cea8f7e.png","shapes":["矩形","多边形"],"id":"21613588-3df4-7fe7-8263-80a49e2df831"}],"B":[{"children":{"新加坡":[{"children":[],"type":"text","label":"首都风景","value":"挺好","id":"9ed79fe4-408b-aed0-4a8b-5a5298813484"}],"马德里":[{"children":[],"type":"checkbox","label":"小吃","options":["热干面","羊肉串","肥肠臭豆腐"],"value":[],"id":"dcb2ac95-14ec-5ed9-3a6c-88ee05f08816"}],"新西兰":[{"children":[],"type":"image","url":"https://dss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/topnav/newfanyi-da0cea8f7e.png","shapes":["矩形"],"id":"2091d2bf-d1e7-5121-44e9-bdfd54006002"}]},"type":"radio","label":"地点","options":["新加坡","马德里","新西兰"],"value":"新西兰","id":"32b94b80-9c49-e95f-2b62-fd77f52f2a99"}]},"type":"radio","label":"类型","options":["A","B"],"value":"B","id":"d57fcbb2-3d73-c236-de4a-ab04c20de629"}]}',
     };
   },
   methods: {
@@ -26,11 +33,14 @@ export default {
 
 <style>
 #app {
+  width: 100vw !important;
+  height: 100vh !important;
+  padding: 0 !important;
+  margin: 0 !important;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>

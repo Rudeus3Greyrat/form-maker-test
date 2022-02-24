@@ -1,4 +1,5 @@
 <script>
+import { findNode } from './tree';
 export default {
   name: 'FormPanel',
   props: {
@@ -27,140 +28,118 @@ export default {
       return renderedNode;
     },
     _renderNode(node) {
+      // obtain node level for nesting render
+      const { level } = findNode(this.tree, node.id);
       if (node.type === 'root') {
-        return this._renderRootNode(node);
+        return this._renderRootNode(node, level);
       } else if (node.type === 'image') {
-        return this._renderImageNode(node);
+        return this._renderImageNode(node, level);
       } else if (node.type === 'radio') {
-        return this._renderRadioNode(node);
+        return this._renderRadioNode(node, level);
       } else if (node.type === 'checkbox') {
-        return this._renderCheckboxNode(node);
+        return this._renderCheckboxNode(node, level);
       } else if (node.type === 'text') {
-        return this._renderTextNode(node);
+        return this._renderTextNode(node, level);
       }
     },
-    _renderRootNode(node) {
+    _renderNodeContainer(node, content = null, level = 0) {
       return (
-        <div className={'container'}>
-          <el-button
-            type="primary"
-            icon="el-icon-plus"
-            circle
-            vOn:click={() => this.$emit('add-node', node.id)}
-          ></el-button>
+        <div
+          class={'render-node-container'}
+          style={{
+            paddingLeft: `${2 * level}vw`,
+          }}
+        >
+          <div class={'render-children-wrapper'}>
+            {content}
+            {this.$parent.mode === 'edit' ? (
+              <el-button
+                class="node-button-add"
+                type="primary"
+                icon="el-icon-plus"
+                circle
+                vOn:click={() => this.$emit('add-node', node.id)}
+              ></el-button>
+            ) : null}
+            {this.$parent.mode === 'edit' && node.type !== 'root' ? (
+              <el-button
+                class="node-button-delete"
+                type="danger"
+                icon="el-icon-delete"
+                circle
+                vOn:click={() => this.$emit('remove-node', node.id)}
+              ></el-button>
+            ) : null}
+          </div>
         </div>
       );
     },
-    _renderImageNode(node) {
-      return (
-        <div className={'container'}>
-          <img src={node.url} alt={JSON.stringify({ shapes: node.shapes })} />
-          <el-button
-            type="primary"
-            icon="el-icon-plus"
-            circle
-            vOn:click={() => this.$emit('add-node', node.id)}
-          ></el-button>
-          <el-button
-            type="danger"
-            icon="el-icon-delete"
-            circle
-            vOn:click={() => this.$emit('remove-node', node.id)}
-          ></el-button>
-        </div>
+    _renderRootNode(node, level) {
+      return this._renderNodeContainer(
+        node,
+        <div class={'render-node-content'}></div>,
+        level
       );
     },
-    _renderRadioNode(node) {
-      return (
-        <div className={'container'}>
-          <span style={{ marginRight: '20px' }}>{node.label}:</span>
+    _renderImageNode(node, level) {
+      return this._renderNodeContainer(
+        node,
+        <img src={node.url} alt={JSON.stringify({ shapes: node.shapes })} />,
+        level
+      );
+    },
+    _renderRadioNode(node, level) {
+      return this._renderNodeContainer(
+        node,
+        <div class={'render-node-content'}>
+          {' '}
+          <span style={{ width: '100px', marginRight: '20px' }}>
+            {node.label}:
+          </span>
           <el-radio-group vModel={node.value}>
             {node.options.map((option) => (
               <el-radio label={option}>{option}</el-radio>
             ))}
           </el-radio-group>
-          <el-button
-            type="primary"
-            icon="el-icon-plus"
-            circle
-            vOn:click={() => this.$emit('add-node', node.id)}
-          ></el-button>
-          <el-button
-            type="danger"
-            icon="el-icon-delete"
-            circle
-            vOn:click={() => this.$emit('remove-node', node.id)}
-          ></el-button>
-        </div>
+        </div>,
+        level
       );
     },
-    _renderCheckboxNode(node) {
-      return (
-        <div className={'container'}>
-          <span style={{ marginRight: '20px' }}>{node.label}:</span>
+    _renderCheckboxNode(node, level) {
+      return this._renderNodeContainer(
+        node,
+        <div class={'render-node-content'}>
+          {' '}
+          <span style={{ width: '100px', marginRight: '20px' }}>
+            {node.label}:
+          </span>
           <el-checkbox-group vModel={node.value}>
             {node.options.map((option) => (
               <el-checkbox label={option}>{option}</el-checkbox>
             ))}
           </el-checkbox-group>
-          <el-button
-            type="primary"
-            icon="el-icon-plus"
-            circle
-            vOn:click={() => this.$emit('add-node', node.id)}
-          ></el-button>
-          <el-button
-            type="danger"
-            icon="el-icon-delete"
-            circle
-            vOn:click={() => this.$emit('remove-node', node.id)}
-          ></el-button>
-        </div>
+        </div>,
+        level
       );
     },
-    _renderTextNode(node) {
-      return (
-        <div className={'container'}>
-          <span style={{ marginRight: '20px' }}>{node.label}:</span>
+    _renderTextNode(node, level) {
+      return this._renderNodeContainer(
+        node,
+        <div class={'render-node-content'}>
+          {' '}
+          <span style={{ width: '100px', marginRight: '20px' }}>
+            {node.label}:
+          </span>
           <el-input
             placeholder="请输入内容"
             vModel={node.value}
             clearable
           ></el-input>
-          <el-button
-            type="primary"
-            icon="el-icon-plus"
-            circle
-            vOn:click={() => this.$emit('add-node', node.id)}
-          ></el-button>
-          <el-button
-            type="danger"
-            icon="el-icon-delete"
-            circle
-            vOn:click={() => this.$emit('remove-node', node.id)}
-          ></el-button>
-        </div>
+        </div>,
+        level
       );
     },
-    _renderPlainNode(node) {
-      return (
-        <div className={'container'}>
-          {node.label}
-          <el-button
-            type="primary"
-            icon="el-icon-plus"
-            circle
-            vOn:click={() => this.$emit('add-node', node.id)}
-          ></el-button>
-          <el-button
-            type="danger"
-            icon="el-icon-delete"
-            circle
-            vOn:click={() => this.$emit('remove-node', node.id)}
-          ></el-button>
-        </div>
-      );
-    },
+
     _normalizeChildren(children, nodeValue, nodeType) {
       if (Array.isArray(children)) {
         return children;
@@ -173,16 +152,43 @@ export default {
   },
   render() {
     const rendered = this._renderTree(this.tree);
-    return rendered;
+    return <div class="form-panel-container">{rendered}</div>;
   },
 };
 </script>
 
 <style scoped>
-.container {
+.form-panel-container {
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap !important;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 0 1vw;
+  margin: 1vh 0;
+  box-shadow: 0 0.1vw 0.6vw 0 rgb(0 0 0 / 10%);
+}
+.render-node-container {
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.render-children-wrapper {
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
   align-items: center;
+}
+
+.render-node-content {
+  width: 100%;
+  height: 9vh;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  margin-right: 30px;
 }
 </style>

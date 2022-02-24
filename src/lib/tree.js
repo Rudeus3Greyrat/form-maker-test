@@ -1,10 +1,11 @@
 import { isObject } from './utils';
 
-const dfs = (current, parent, id) => {
+const dfs = (current, parent, id,level=0) => {
   if (current.id === id) {
     return {
       parent,
       current,
+      level
     };
   }
 
@@ -14,19 +15,19 @@ const dfs = (current, parent, id) => {
   }
 
   for (const child of children) {
-    const res = dfs(child, current, id);
+    const res = dfs(child, current, id,level+1);
     if (res) return res;
   }
 };
 
-const _findNode = (tree, id, currentState) => {
+const findNode = (tree, id) => {
   let current = tree;
   let parent = null;
-  return dfs(current, parent, id, currentState);
+  return dfs(current, parent, id);
 };
 
 const addNode = ({ tree, parentId, node }) => {
-  const { current } = _findNode(tree, parentId);
+  const { current } = findNode(tree, parentId);
   const children = current.children;
   if (current.type === 'radio') {
     if (!current.value || !isObject(children)) return;
@@ -37,7 +38,7 @@ const addNode = ({ tree, parentId, node }) => {
 };
 
 const removeNode = ({ tree, id }) => {
-  const { parent } = _findNode(tree, id);
+  const { parent } = findNode(tree, id);
   let children = parent.children;
   let index;
   if (parent.type === 'radio') {
@@ -54,4 +55,4 @@ const removeNode = ({ tree, id }) => {
   }
 };
 
-export { addNode, removeNode };
+export { findNode,addNode, removeNode };

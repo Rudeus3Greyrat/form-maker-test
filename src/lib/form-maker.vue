@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <config-panel ref="configPanel" />
+    <config-panel ref="configPanel" v-if="mode === 'edit'" />
     <form-panel :tree="tree" @add-node="_addChild" @remove-node="_removeNode" />
   </div>
 </template>
@@ -18,6 +18,17 @@ export default {
       type: String,
       default: '{}',
     },
+    mode: {
+      type: String,
+      validator: function (value) {
+        return ['edit', 'view'].indexOf(value) !== -1;
+      },
+      default: 'edit',
+    },
+    uploadConfig: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -32,7 +43,6 @@ export default {
       let obj;
       try {
         obj = JSON.parse(this.json);
-        console.log(obj);
       } catch (error) {
         this.$message.error('传入的不是有效的JSON！');
         obj = {};
@@ -65,6 +75,7 @@ export default {
 
 <style scoped>
 .container {
+  width: 100%;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;

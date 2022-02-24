@@ -8,3 +8,11 @@ interface Node {
   url?: string;
   shapes?: string[];
 }
+
+interface FormMakerProps {
+  json: string;
+  mode: 'edit' | 'view';
+  uploadProps: {
+    handleUploadChange: Function;
+  };
+}

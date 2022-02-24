@@ -1,45 +1,79 @@
 <template>
-  <div class="container">
-    <el-select v-model="config.level1Type" placeholder="请选择">
-      <el-option key="image" value="image" label="图片" />
-      <el-option key="form" value="form" label="非图片" />
-    </el-select>
-    <div class="container" v-if="config.level1Type === 'image'">
+  <div class="config-panel-container">
+    <div>
+      <span>节点一级类型： </span>
+      <el-select
+        v-model="config.level1Type"
+        placeholder="请选择"
+        :style="{ width: '8vw' }"
+      >
+        <el-option key="image" value="image" label="图片" />
+        <el-option key="form" value="form" label="非图片" />
+      </el-select>
+    </div>
+    <div
+      class="config-panel-image-container"
+      v-if="config.level1Type === 'image'"
+    >
       <el-upload
+        ref="upload"
         class="upload-demo"
         action="https://jsonplaceholder.typicode.com/posts/"
         multiple
+        :on-change="handleUploadChange"
         :limit="3"
       >
-        <el-button size="small" type="primary">点击上传</el-button>
+        <el-button size="small" type="primary">点击上传图片</el-button>
       </el-upload>
-      <el-select v-model="config.shapes" multiple placeholder="请选择">
-        <el-option key="rect" value="矩形" label="矩形" />
-        <el-option key="poly" value="多边形" label="多边形" />
-      </el-select>
+      <div :style="{ marginLeft: '1.5vw' }">
+        <span>选择标注框类型(支持多选)： </span>
+        <el-select v-model="config.shapes" multiple placeholder="请选择">
+          <el-option key="rect" value="矩形" label="矩形" />
+          <el-option key="poly" value="多边形" label="多边形" />
+        </el-select>
+      </div>
     </div>
-    <div class="container" v-if="config.level1Type === 'form'">
-      <el-select v-model="config.level2Type" placeholder="请选择">
+    <div
+      class="config-panel-form-container"
+      v-if="config.level1Type === 'form'"
+    >
+      <span>节点二级类型： </span>
+      <el-select
+        v-model="config.level2Type"
+        placeholder="请选择"
+        :style="{ width: '8vw' }"
+      >
         <el-option key="radio" value="radio" label="单选框" />
         <el-option key="checkbox" value="checkbox" label="复选框" />
         <el-option key="text" value="text" label="文本框" />
       </el-select>
-      <el-input
-        v-if="config.level2Type !== ''"
-        type="text"
-        v-model="config.label"
-        placeholder="请输入标签"
-      />
-      <el-input
-        v-if="config.level2Type === 'text'"
-        type="text"
-        v-model="config.text"
-        placeholder="请输入"
-      />
-      <tags
+      <div v-if="config.level2Type !== ''" :style="{ marginLeft: '1.5vw' }">
+        <span>标签： </span>
+        <el-input
+          ref="label"
+          type="text"
+          v-model="config.label"
+          placeholder="请输入标签"
+          @change="() => $refs.label.blur()"
+          :style="{ width: '8vw' }"
+        />
+      </div>
+      <div v-if="config.level2Type === 'text'" :style="{ marginLeft: '1.5vw' }">
+        <span>文本内容： </span>
+        <el-input
+          type="text"
+          v-model="config.text"
+          placeholder="请输入"
+          :style="{ width: '30vw' }"
+        />
+      </div>
+      <div
         v-if="config.level2Type === 'radio' || config.level2Type === 'checkbox'"
-        :dynamicTags.sync="config.tags"
-      />
+        class="tags-container"
+      >
+        <span>添加选项： </span>
+        <tags :dynamicTags.sync="config.tags" :style="{ width: '30vw' }" />
+      </div>
     </div>
   </div>
 </template>
@@ -63,7 +97,12 @@ export default {
       },
     };
   },
+  created() {
+    this._mergeUploadConfig();
+  },
   methods: {
+    handleUploadChange() {
+    },
     _transFormConfigToNode(config) {
       const { level1Type, level2Type, text, tags, shapes, url, label } = config;
       const node = {
@@ -101,15 +140,45 @@ export default {
       }
       return nodeInfo;
     },
+    // merge user upload config when el-upload is mounted
+    _mergeUploadConfig() {
+      const userConfig = this.$parent.uploadConfig;
+      this.handleUploadChange =
+        userConfig.handleUploadChange || this.handleUploadChange;
+    },
   },
 };
 </script>
 
 <style scoped>
-.container {
+.config-panel-container {
+  width: 100%;
   display: flex;
   flex-flow: row nowrap !important;
   justify-content: flex-start;
   align-items: center;
+  padding: 1vh 1vw;
+  box-shadow: 0 0.1vw 0.6vw 0 rgb(0 0 0 / 10%);
+}
+.config-panel-image-container {
+  display: flex;
+  flex-flow: row nowrap !important;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 1.5vw;
+}
+.config-panel-form-container {
+  display: flex;
+  flex-flow: row nowrap !important;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 1.5vw;
+}
+.tags-container {
+  display: flex;
+  flex-flow: row nowrap !important;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 1.5vw;
 }
 </style>
