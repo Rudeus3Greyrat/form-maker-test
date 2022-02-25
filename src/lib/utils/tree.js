@@ -1,11 +1,11 @@
-import { isObject } from './utils';
+import { isObject } from '.';
 
-const dfs = (current, parent, id,level=0) => {
+const dfs = (current, parent, id, level = 0) => {
   if (current.id === id) {
     return {
       parent,
       current,
-      level
+      level,
     };
   }
 
@@ -15,7 +15,7 @@ const dfs = (current, parent, id,level=0) => {
   }
 
   for (const child of children) {
-    const res = dfs(child, current, id,level+1);
+    const res = dfs(child, current, id, level + 1);
     if (res) return res;
   }
 };
@@ -55,4 +55,4 @@ const removeNode = ({ tree, id }) => {
   }
 };
 
-export { findNode,addNode, removeNode };
+export { findNode, addNode, removeNode };

@@ -5,7 +5,7 @@ interface Node {
   value?: string | string[];
   options?: string[];
   children: { [key: string]: Node[] };
-  url?: string;
+  urls?: string[];
   shapes?: string[];
 }
 

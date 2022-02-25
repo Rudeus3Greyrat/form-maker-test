@@ -60,25 +60,15 @@ export default {
   },
   data() {
     return {
-      tagsCopy: [],
       inputVisible: false,
       inputValue: '',
     };
   },
-  mounted() {
-    this.tagsCopy = this.dynamicTags.slice();
-  },
-  watch: {
-    tagsCopy: {
-      handler: function (val) {
-        this.$emit('update:dynamicTags', val);
-      },
-      deep: true,
-    },
-  },
   methods: {
     handleClose(tag) {
-      this.tagsCopy.splice(this.tagsCopy.indexOf(tag), 1);
+      let tagsCopy = this.dynamicTags;
+      tagsCopy.splice(tagsCopy.indexOf(tag), 1);
+      this.$emit('update:dynamicTags', tagsCopy);
     },
 
     showInput() {
@@ -91,7 +81,9 @@ export default {
     handleInputConfirm() {
       let inputValue = this.inputValue;
       if (inputValue) {
-        this.tagsCopy.push(inputValue);
+        let tagsCopy = this.dynamicTags;
+        tagsCopy.push(inputValue);
+        this.$emit('update:dynamicTags', tagsCopy);
       }
       this.inputVisible = false;
       this.inputValue = '';

@@ -1,5 +1,4 @@
 <script>
-import { findNode } from './tree';
 export default {
   name: 'FormPanel',
   props: {
@@ -9,7 +8,9 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      editing: {},
+    };
   },
   methods: {
     _addNode(id) {
@@ -28,28 +29,21 @@ export default {
       return renderedNode;
     },
     _renderNode(node) {
-      // obtain node level for nesting render
-      const { level } = findNode(this.tree, node.id);
       if (node.type === 'root') {
-        return this._renderRootNode(node, level);
-      } else if (node.type === 'image') {
-        return this._renderImageNode(node, level);
+        return this._renderRootNode(node);
+      } else if (node.type === 'upload') {
+        return this._renderUploadNode(node);
       } else if (node.type === 'radio') {
-        return this._renderRadioNode(node, level);
+        return this._renderRadioNode(node);
       } else if (node.type === 'checkbox') {
-        return this._renderCheckboxNode(node, level);
+        return this._renderCheckboxNode(node);
       } else if (node.type === 'text') {
-        return this._renderTextNode(node, level);
+        return this._renderTextNode(node);
       }
     },
-    _renderNodeContainer(node, content = null, level = 0) {
+    _renderNodeContainer(node, content = null) {
       return (
-        <div
-          class={'render-node-container'}
-          style={{
-            paddingLeft: `${2 * level}vw`,
-          }}
-        >
+        <div class={'render-node-container'}>
           <div class={'render-children-wrapper'}>
             {content}
             {this.$parent.mode === 'edit' ? (
@@ -58,7 +52,39 @@ export default {
                 type="primary"
                 icon="el-icon-plus"
                 circle
-                vOn:click={() => this.$emit('add-node', node.id)}
+                vOn:click={() => {
+                  if (Object.values(this.editing).some((item) => item)) return;
+                  this.$emit('add-node', node.id);
+                }}
+              ></el-button>
+            ) : null}
+            {this.$parent.mode === 'edit' &&
+            !this.editing[node.id] &&
+            node.type !== 'root' ? (
+              <el-button
+                class="node-button-edit"
+                type="success"
+                icon="el-icon-edit"
+                circle
+                vOn:click={() => {
+                  if (Object.values(this.editing).some((item) => item)) return;
+                  this.$set(this.editing, node.id, true);
+                  this.$emit('edit-node', node.id);
+                }}
+              ></el-button>
+            ) : null}
+            {this.$parent.mode === 'edit' &&
+            this.editing[node.id] &&
+            node.type !== 'root' ? (
+              <el-button
+                class="node-button-check"
+                type="success"
+                icon="el-icon-check"
+                circle
+                vOn:click={() => {
+                  this.$set(this.editing, node.id, false);
+                  this.$emit('finish-edit-node', node.id);
+                }}
               ></el-button>
             ) : null}
             {this.$parent.mode === 'edit' && node.type !== 'root' ? (
@@ -74,26 +100,41 @@ export default {
         </div>
       );
     },
-    _renderRootNode(node, level) {
+    _renderRootNode(node) {
       return this._renderNodeContainer(
         node,
-        <div class={'render-node-content'}></div>,
-        level
+        <div class={'render-node-content'}></div>
       );
     },
-    _renderImageNode(node, level) {
+    _renderUploadNode(node) {
       return this._renderNodeContainer(
         node,
-        <img src={node.url} alt={JSON.stringify({ shapes: node.shapes })} />,
-        level
+        <div class={'render-node-content'}>
+          <span
+            style={{ width: '100px', marginRight: '10px', textAlign: 'left' }}
+          >
+            {node.label}:
+          </span>
+          <div class={'images-wrapper'}>
+            {node.urls.map((url) => (
+              <img
+                src={url}
+                style={{ margin: '0 20px' }}
+                alt={JSON.stringify({ shapes: node.shapes })}
+              />
+            ))}
+          </div>
+        </div>
       );
     },
-    _renderRadioNode(node, level) {
+    _renderRadioNode(node) {
       return this._renderNodeContainer(
         node,
         <div class={'render-node-content'}>
           {' '}
-          <span style={{ width: '100px', marginRight: '20px' }}>
+          <span
+            style={{ width: '100px', marginRight: '10px', textAlign: 'left' }}
+          >
             {node.label}:
           </span>
           <el-radio-group vModel={node.value}>
@@ -101,16 +142,17 @@ export default {
               <el-radio label={option}>{option}</el-radio>
             ))}
           </el-radio-group>
-        </div>,
-        level
+        </div>
       );
     },
-    _renderCheckboxNode(node, level) {
+    _renderCheckboxNode(node) {
       return this._renderNodeContainer(
         node,
         <div class={'render-node-content'}>
           {' '}
-          <span style={{ width: '100px', marginRight: '20px' }}>
+          <span
+            style={{ width: '100px', marginRight: '10px', textAlign: 'left' }}
+          >
             {node.label}:
           </span>
           <el-checkbox-group vModel={node.value}>
@@ -118,16 +160,16 @@ export default {
               <el-checkbox label={option}>{option}</el-checkbox>
             ))}
           </el-checkbox-group>
-        </div>,
-        level
+        </div>
       );
     },
-    _renderTextNode(node, level) {
+    _renderTextNode(node) {
       return this._renderNodeContainer(
         node,
         <div class={'render-node-content'}>
-          {' '}
-          <span style={{ width: '100px', marginRight: '20px' }}>
+          <span
+            style={{ width: '100px', marginRight: '10px', textAlign: 'left' }}
+          >
             {node.label}:
           </span>
           <el-input
@@ -135,8 +177,7 @@ export default {
             vModel={node.value}
             clearable
           ></el-input>
-        </div>,
-        level
+        </div>
       );
     },
 
@@ -190,5 +231,13 @@ export default {
   justify-content: flex-start;
   align-items: center;
   margin-right: 30px;
+}
+.images-wrapper {
+  width: calc(100%-110px);
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-x: scroll;
 }
 </style>
