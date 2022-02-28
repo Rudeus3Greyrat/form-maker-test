@@ -8,7 +8,7 @@
         v-model="config.label"
         placeholder="请输入标签"
         @change="() => $refs.label.blur()"
-        :style="{ width: '8vw' }"
+        :style="{ width: '150px' }"
       />
     </div>
     <div :style="{ margin: '0 1.5vw' }">

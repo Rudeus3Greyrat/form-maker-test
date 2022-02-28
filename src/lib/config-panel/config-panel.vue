@@ -2,11 +2,7 @@
   <div class="config-panel-container">
     <div>
       <span>节点类型： </span>
-      <el-select
-        v-model="config.type"
-        placeholder="请选择"
-        :style="{ width: '8vw' }"
-      >
+      <el-select v-model="config.type" placeholder="请选择">
         <el-option key="image" value="upload" label="上传文件" />
         <el-option key="radio" value="radio" label="单选框" />
         <el-option key="checkbox" value="checkbox" label="复选框" />

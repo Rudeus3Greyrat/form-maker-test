@@ -38,7 +38,7 @@
   padding-bottom: 0;
 }
 .input-new-tag {
-  width: 8vw !important;
+  width: 160px !important;
   margin-left: 10px;
   vertical-align: bottom;
 }

@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../../../../../vue-context-menu-main"
+		},
+		{
+			"path": "../../../.."
+		}
+	],
+	"settings": {
+		"liveServer.settings.port": 5502
+	}
+}

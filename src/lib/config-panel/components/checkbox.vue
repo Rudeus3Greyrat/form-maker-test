@@ -8,12 +8,12 @@
         v-model="config.label"
         placeholder="请输入标签"
         @change="() => $refs.label.blur()"
-        :style="{ width: '8vw' }"
+        :style="{ width: '150px' }"
       />
     </div>
     <div class="tags-container">
-      <span>添加选项： </span>
-      <tags :dynamicTags.sync="config.tags" :style="{ width: '30vw' }" />
+      <span :style="{ width: '100%' }">添加选项： </span>
+      <tags :dynamicTags.sync="config.tags" :style="{ width: '90%' }" />
     </div>
   </div>
 </template>
