@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div :style="{ margin: '0 1.5vw' }">
+    <div :style="{ margin: '0' }">
       <span>标签： </span>
       <el-input
         ref="label"
@@ -8,18 +8,18 @@
         v-model="config.label"
         placeholder="请输入标签"
         @change="() => $refs.label.blur()"
-        :style="{ width: '150px' }"
+        :style="{ width: '100px' }"
       />
     </div>
-    <div :style="{ margin: '0 1.5vw' }">
-      <span>每张图片的描述： </span>
+    <div :style="{ margin: '10px' }">
+      <span>图片描述： </span>
       <el-input
         ref="label"
         type="text"
         v-model="currentDesc"
         placeholder="请输入描述"
         @change="() => $refs.label.blur()"
-        :style="{ width: '8vw' }"
+        :style="{ width: '110px' }"
       />
     </div>
     <el-upload
@@ -30,13 +30,15 @@
       :on-change="uploadConfig.handleUploadChange"
       :limit="3"
     >
-      <el-button size="small" type="primary">点击上传图片</el-button>
+      <el-button size="small" type="primary">点击上传</el-button>
     </el-upload>
-    <div :style="{ marginLeft: '1.5vw' }">
-      <span>选择标注框类型(支持多选)： </span>
-      <el-select v-model="config.shapes" multiple placeholder="请选择">
+    <div :style="{ marginLeft: '10px' }">
+      <span>标注框类型： </span>
+      <el-select v-model="config.shapes" :style="{ width: '100px' }" multiple placeholder="请选择">
         <el-option key="rect" value="矩形" label="矩形" />
         <el-option key="poly" value="多边形" label="多边形" />
+        <el-option key="dot" value="点" label="点" />
+        <el-option key="line" value="线" label="线" />
       </el-select>
     </div>
   </div>

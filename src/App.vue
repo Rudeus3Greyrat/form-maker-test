@@ -12,10 +12,8 @@
 </template>
 
 <script>
-import FormMaker from './lib/index.vue';
 export default {
   name: 'App',
-  components: { FormMaker },
   data() {
     return {
       demoFn: () => console.log('2222'),

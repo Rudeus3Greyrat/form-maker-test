@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div :style="{ marginLeft: '1.5vw' }">
+    <div :style="{ marginLeft: '10px' }">
       <span>标签： </span>
       <el-input
         ref="label"
@@ -8,16 +8,16 @@
         v-model="config.label"
         placeholder="请输入标签"
         @change="() => $refs.label.blur()"
-        :style="{ width: '150px' }"
+        :style="{ width: '120px' }"
       />
     </div>
-    <div :style="{ marginLeft: '1.5vw' }">
+    <div :style="{ marginLeft: '10px' }">
       <span>文本内容： </span>
       <el-input
         type="text"
         v-model="config.text"
         placeholder="请输入"
-        :style="{ width: '600px' }"
+        :style="{ width: '250px' }"
       />
     </div>
   </div>
